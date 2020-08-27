@@ -22,10 +22,14 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
     private var _bookLiveData = MutableLiveData<List<Book>>()
     val bookLiveData: LiveData<List<Book>> = _bookLiveData
 
+//    var mutableId = MutableLiveData<String>()
+//    var title = MutableLiveData<String>()
+//    var author = MutableLiveData<String>()
+//    var description = MutableLiveData<String>()
+//    var published = MutableLiveData<String>()
 
-    //    var liveData: MutableLiveData<List<Book>> = MutableLiveData()
-    private var _book = MutableLiveData<Book>()
-    var book: LiveData<Book> = _book
+    var book = MutableLiveData<Book>()
+
 
     //    var book: LiveData<Book> = _book
     var bookId = 0
@@ -62,7 +66,17 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
     }
 
     private suspend fun loadBookByID(id: Int) {
-        _book.postValue(bookRepository.getBookByID(id))
+        book.postValue(bookRepository.getBookByID(id))
+
+//        scope.launch {
+//        val book1 = bookRepository.getBookByID(id)
+//        mutableId.postValue(book1.id.toString())
+//        title.postValue(book1.title)
+//        author.postValue(book1.author)
+//        description.postValue(book1.description)
+//        published.postValue(book1.published.toString())
+//        }
+//        _book.postValue(bookRepository.getBookByID(id))
 //        _book.value =
 //            .enqueue(object : Callback<Book> {
 //            override fun onFailure(call: Call<Book>, t: Throwable) {
@@ -152,12 +166,12 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
 
     fun deleteBook() {
         scope.launch {
-            deleteBook(bookId, _book.value!!)
+            deleteBook(bookId, book.value!!)
         }
     }
 
     fun addOrUpdateBook() {
-        val targetBook = _book.value!!
+        val targetBook = book.value!!
         val targetId = targetBook?.id ?: 0
         scope.launch {
             if (targetId != 0) {
