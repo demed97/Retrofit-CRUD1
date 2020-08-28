@@ -18,15 +18,22 @@ class BookRepository(application: Application) {
 
     private var allBookList = mutableListOf<Book>()
 
-    private val allBookStateFlow = MutableStateFlow(allBookList.toList())
+    private val allBookStateFlow = MutableStateFlow<List<Book>>(listOf())
 
     init {
         val database = BookDatabase.getDatabase(application)!!
         dao = database.getBookDao()
     }
 
+    suspend fun getAllBooksFromDB(): StateFlow<List<Book>> {
+        allBookStateFlow.value = dao.getAllBooks()
+        return allBookStateFlow
+    }
+
     suspend fun getAllBooks(): StateFlow<List<Book>> {
-        allBookStateFlow.value = retrofitInterface.getAllBooks()
+        dao.deleteAllBook()
+        dao.addAllBook(retrofitInterface.getAllBooks())
+        allBookStateFlow.value = dao.getAllBooks()
         return allBookStateFlow
     }
 
@@ -37,16 +44,19 @@ class BookRepository(application: Application) {
     suspend fun addNewBook(book: Book) {
         retrofitInterface.addNewBook(book)
         dao.addNewBook(book)
+//        allBookStateFlow.value = dao.getAllBooks()
     }
 
     suspend fun deleteBook(id: Int, book: Book) {
         retrofitInterface.deleteBook(id)
         dao.deleteBook(book)
+//        allBookStateFlow.value = dao.getAllBooks()
     }
 
     suspend fun updateBook(id: Int, book: Book) {
         retrofitInterface.updateBook(id, book)
         dao.updateBook(book)
+//        allBookStateFlow.value = dao.getAllBooks()
     }
 
     companion object {

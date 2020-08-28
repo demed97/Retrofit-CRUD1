@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Retrofit-CRUD</string>
     <string name="add">add book</string>
-    <string name="show_books">show books</string>
+    <string name="add_book">add book</string>
     <string name="book_id">Book id:</string>
     <string name="book_title">Book title:</string>
     <string name="book_author">Author of book:</string>

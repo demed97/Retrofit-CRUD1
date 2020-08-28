@@ -5,10 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Book(
-    var title : String,
-    var author : String,
-    var description : String,
-    var published : Int,
+    var title : String?,
+    var author : String?,
+    var description : String?,
+    var published : Int?,
     @PrimaryKey(autoGenerate = true)
     var id : Int = 0
 ) {

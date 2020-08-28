@@ -22,16 +22,19 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
     private var _bookLiveData = MutableLiveData<List<Book>>()
     val bookLiveData: LiveData<List<Book>> = _bookLiveData
 
+    private var _addBookLiveData = MutableLiveData<Unit>()
+    val addBookLiveData: LiveData<Unit> = _addBookLiveData
+
+    private var _closeActivityLiveData = MutableLiveData<Unit>()
+    val closeActivityLiveData: LiveData<Unit> = _closeActivityLiveData
 //    var mutableId = MutableLiveData<String>()
 //    var title = MutableLiveData<String>()
 //    var author = MutableLiveData<String>()
 //    var description = MutableLiveData<String>()
 //    var published = MutableLiveData<String>()
 
-    var book = MutableLiveData<Book>()
+    var book = MutableLiveData<Book>(Book(null, null, null, null))
 
-
-    //    var book: LiveData<Book> = _book
     var bookId = 0
 
     //var bookLiveData : MutableLiveData<Book> = MutableLiveData()
@@ -44,11 +47,23 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
 
     private val scope = viewModelScope + handler + Dispatchers.Default
 
+    fun loadBookListFromDatabase() {
 
-    private suspend fun loadBookListFromServer() {
-        bookRepository.getAllBooks().collect {
-            _bookLiveData.postValue(it)
+        scope.launch {
+            bookRepository.getAllBooksFromDB().collect {
+                _bookLiveData.postValue(it)
+            }
         }
+    }
+
+    fun loadBookListFromServer() {
+
+        scope.launch {
+            bookRepository.getAllBooks().collect {
+                _bookLiveData.postValue(it)
+            }
+        }
+
 //            .enqueue(object : Callback<List<Book>> {
 //            override fun onFailure(call: Call<List<Book>>, t: Throwable) {
 //                Toast.makeText(context, "Books loading was failed", Toast.LENGTH_LONG).show()
@@ -97,8 +112,11 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
 //        })
     }
 
-    private suspend fun addBook(book: Book) {
-        bookRepository.addNewBook(book)
+    private fun addBook(book: Book) {
+        scope.launch {
+            bookRepository.addNewBook(book)
+            closeActivity()
+        }
 //            .enqueue(object : Callback<Book> {
 //            override fun onFailure(call: Call<Book>, t: Throwable) {
 //                Toast.makeText(context, "Book wasn't add!", Toast.LENGTH_LONG).show()
@@ -114,8 +132,11 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
 //        })
     }
 
-    private suspend fun updateBook(id: Int, book: Book) {
-        bookRepository.updateBook(id, book)
+    private fun updateBook(id: Int, book: Book) {
+        scope.launch {
+            bookRepository.updateBook(id, book)
+            closeActivity()
+        }
 //            .enqueue(object : Callback<Book> {
 //            override fun onFailure(call: Call<Book>, t: Throwable) {
 //                Toast.makeText(context, "Book wasn't update!", Toast.LENGTH_LONG).show()
@@ -133,8 +154,11 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
 //        })
     }
 
-    private suspend fun deleteBook(id: Int, book: Book) {
-        bookRepository.deleteBook(id, book)
+    private fun deleteBook(id: Int, book: Book) {
+        scope.launch {
+            bookRepository.deleteBook(id, book)
+            closeActivity()
+        }
 //            .enqueue(object : Callback<ResponseBody> {
 //            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 //                Toast.makeText(context, "Book wasn't delete!", Toast.LENGTH_LONG).show()
@@ -151,10 +175,13 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
 //        })
     }
 
-    fun showBookList() {
-        scope.launch {
-            loadBookListFromServer()
-        }
+
+    private fun closeActivity() {
+        _closeActivityLiveData.postValue(Unit)
+    }
+
+    fun addNewBook() {
+        _addBookLiveData.postValue(Unit)
     }
 
     fun showBookInfo(id: Int) {
@@ -165,20 +192,22 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
     }
 
     fun deleteBook() {
-        scope.launch {
             deleteBook(bookId, book.value!!)
-        }
     }
 
     fun addOrUpdateBook() {
-        val targetBook = book.value!!
+        val targetBook = book.value
         val targetId = targetBook?.id ?: 0
-        scope.launch {
-            if (targetId != 0) {
-                updateBook(targetId, targetBook!!)
-            } else {
-                addBook(targetBook!!)
-            }
+        if (targetId != 0) {
+            updateBook(targetId, targetBook!!)
+        } else {
+//            val boook = Book(
+//                book.value?.title,
+//                book.value?.author,
+//                book.value?.description,
+//                book.value?.published
+//            )
+            addBook(targetBook!!)
         }
     }
 }

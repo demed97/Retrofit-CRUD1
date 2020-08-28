@@ -19,11 +19,19 @@ class BookActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val bookId = intent.extras?.getInt("bookID")
         val factory = ViewModelFactory(application, BookRepository.getRepository(application))
-        val viewModel = ViewModelProvider(this,factory).get(BookViewModel::class.java)
-        val bookBinding = DataBindingUtil.setContentView<ActivityBookBinding>(this, R.layout.activity_book)
+        val viewModel = ViewModelProvider(this, factory).get(BookViewModel::class.java)
+        val bookBinding =
+            DataBindingUtil.setContentView<ActivityBookBinding>(this, R.layout.activity_book)
         bookBinding.lifecycleOwner = this
 
-        viewModel.showBookInfo(bookId!!)
+        if (bookId != null) {
+            viewModel.showBookInfo(bookId)
+        }
+
         bookBinding.viewModel = viewModel
+
+        viewModel.closeActivityLiveData.observe(this, Observer {
+            finish()
+        })
     }
 }
