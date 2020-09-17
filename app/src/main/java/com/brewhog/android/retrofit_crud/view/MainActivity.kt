@@ -14,6 +14,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.brewhog.android.retrofit_crud.R
+import com.brewhog.android.retrofit_crud.database.BookDao
+import com.brewhog.android.retrofit_crud.database.BookDatabase
 import com.brewhog.android.retrofit_crud.databinding.ActivityMainBinding
 import com.brewhog.android.retrofit_crud.model.Book
 import com.brewhog.android.retrofit_crud.repository.BookRepository
@@ -21,18 +23,27 @@ import com.brewhog.android.retrofit_crud.util.BookAdapter
 import com.brewhog.android.retrofit_crud.util.BookHolder
 import com.brewhog.android.retrofit_crud.viewmodel.BookViewModel
 import com.brewhog.android.retrofit_crud.viewmodel.ViewModelFactory
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
+
+//    @Inject
     private lateinit var viewModel: BookViewModel
+
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    @Inject
+    lateinit var adapter: BookAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val adapter = BookAdapter(listOf())
-        val factory = ViewModelFactory(application, BookRepository.getRepository(application))
+//        val adapter = BookAdapter(listOf())
+//        val factory = ViewModelFactory(application, BookRepository.getRepository(application))
         viewModel = ViewModelProvider(this, factory).get(BookViewModel::class.java)
-
         checkConnection(viewModel)
         observeToLiveData(viewModel, adapter)
 

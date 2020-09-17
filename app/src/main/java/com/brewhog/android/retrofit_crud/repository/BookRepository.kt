@@ -1,6 +1,7 @@
 package com.brewhog.android.retrofit_crud.repository
 
 import android.app.Application
+import com.brewhog.android.retrofit_crud.api.BookInterface
 import com.brewhog.android.retrofit_crud.api.RetrofitClient
 import com.brewhog.android.retrofit_crud.database.BookDao
 import com.brewhog.android.retrofit_crud.database.BookDatabase
@@ -8,22 +9,21 @@ import com.brewhog.android.retrofit_crud.model.Book
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class BookRepository(application: Application) {
+class BookRepository @Inject constructor(val dao: BookDao, val retrofitInterface: BookInterface) {
 
-    private var dao: BookDao
+//    private var dao: BookDao
 
-    private val retrofitInterface = RetrofitClient().getBookInterface()
-
-    private var allBookList = mutableListOf<Book>()
+//    private val retrofitInterface = RetrofitClient().getBookInterface()
 
     private val allBookStateFlow = MutableStateFlow<List<Book>>(listOf())
 
-    init {
-        val database = BookDatabase.getDatabase(application)!!
-        dao = database.getBookDao()
-    }
+//    init {
+//        val database = BookDatabase.getDatabase(application)!!
+//        dao = database.getBookDao()
+//    }
 
     suspend fun getAllBooksFromDB(): StateFlow<List<Book>> {
         allBookStateFlow.value = dao.getAllBooks()
@@ -61,6 +61,6 @@ class BookRepository(application: Application) {
 
     companion object {
 
-        fun getRepository(application: Application) = BookRepository(application)
+//        fun getRepository(application: Application) = BookRepository(application)
     }
 }

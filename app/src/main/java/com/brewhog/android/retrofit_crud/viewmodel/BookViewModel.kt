@@ -14,9 +14,10 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class BookViewModel(application: Application, private val bookRepository: BookRepository) :
+class BookViewModel @Inject constructor(private val bookRepository: BookRepository) :
     ViewModel() {
 
     private var _bookLiveData = MutableLiveData<List<Book>>()
@@ -38,7 +39,7 @@ class BookViewModel(application: Application, private val bookRepository: BookRe
     var bookId = 0
 
     //var bookLiveData : MutableLiveData<Book> = MutableLiveData()
-    private var context = application.applicationContext
+//    private var context = application.applicationContext
 
 
     private val handler = CoroutineExceptionHandler { _, exception ->

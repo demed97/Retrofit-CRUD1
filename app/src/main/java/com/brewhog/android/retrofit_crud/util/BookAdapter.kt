@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.brewhog.android.retrofit_crud.R
 import com.brewhog.android.retrofit_crud.databinding.BookItemBinding
 import com.brewhog.android.retrofit_crud.model.Book
+import javax.inject.Inject
 
-class BookAdapter(private var bookList : List<Book>) : RecyclerView.Adapter<BookHolder>() {
+class BookAdapter @Inject constructor() : RecyclerView.Adapter<BookHolder>() {
     var callback : AdapterCallback? = null
+    private var bookList : List<Book> = arrayListOf()
+
+
 
     interface AdapterCallback{
         fun callActivityFromHolder(holder: BookHolder, id : Int)
@@ -36,5 +40,9 @@ class BookAdapter(private var bookList : List<Book>) : RecyclerView.Adapter<Book
     override fun onBindViewHolder(holder: BookHolder, position: Int) {
         holder.bookItemBinding.book = bookList[position]
         callback?.callActivityFromHolder(holder, bookList[position].id)
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(book: Book, position: Int)
     }
 }

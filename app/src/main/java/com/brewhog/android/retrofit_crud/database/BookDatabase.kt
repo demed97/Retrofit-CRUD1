@@ -11,18 +11,18 @@ abstract class BookDatabase : RoomDatabase() {
 
     abstract fun getBookDao(): BookDao
 
-    companion object {
-        var database: BookDatabase? = null
-
-        fun getDatabase(application: Application): BookDatabase? {
-            if (database == null) {
-                database = Room.databaseBuilder(
-                    application.applicationContext,
-                    BookDatabase::class.java,
-                    "book_database"
-                ).build()
-            }
-            return database
-        }
-    }
+//    companion object {
+//        var database: BookDatabase? = null
+//
+//        fun getDatabase(application: Application): BookDatabase? {
+//            if (database == null) {
+//                database = Room.databaseBuilder(
+//                    application.applicationContext,
+//                    BookDatabase::class.java,
+//                    "book_database"
+//                ).build()
+//            }
+//            return database
+//        }
+//    }
 }
