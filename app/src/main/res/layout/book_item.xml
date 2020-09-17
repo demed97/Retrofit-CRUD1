@@ -6,13 +6,18 @@
         <variable
             name="book"
             type="com.brewhog.android.retrofit_crud.model.Book" />
+        
+        <variable
+            name="click"
+            type="com.brewhog.android.retrofit_crud.util.OnBookClickListener" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:onClick="@{click.onItemClick}">
 
         <TextView
             android:id="@+id/bookId"
