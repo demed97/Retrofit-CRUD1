@@ -1,19 +1,12 @@
 package com.brewhog.android.retrofit_crud.viewmodel
 
-import android.app.Application
 import android.util.Log
-import android.widget.Toast
-import androidx.databinding.ObservableField
 import androidx.lifecycle.*
-import com.brewhog.android.retrofit_crud.api.RetrofitClient
 import com.brewhog.android.retrofit_crud.model.Book
 import com.brewhog.android.retrofit_crud.repository.BookRepository
+import com.brewhog.android.retrofit_crud.util.SingleLiveEvent
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -23,11 +16,11 @@ class BookViewModel @Inject constructor(private val bookRepository: BookReposito
     private var _bookLiveData = MutableLiveData<List<Book>>()
     val bookLiveData: LiveData<List<Book>> = _bookLiveData
 
-    private var _addBookLiveData = MutableLiveData<Unit>()
-    val addBookLiveData: LiveData<Unit> = _addBookLiveData
+    private var _addBookEvent = SingleLiveEvent<Unit>()
+    val addBookEvent: LiveData<Unit> = _addBookEvent
 
-    private var _closeActivityLiveData = MutableLiveData<Unit>()
-    val closeActivityLiveData: LiveData<Unit> = _closeActivityLiveData
+    private var _closeActivityEvent = SingleLiveEvent<Unit>()
+    val closeActivityEvent: LiveData<Unit> = _closeActivityEvent
 //    var mutableId = MutableLiveData<String>()
 //    var title = MutableLiveData<String>()
 //    var author = MutableLiveData<String>()
@@ -178,11 +171,11 @@ class BookViewModel @Inject constructor(private val bookRepository: BookReposito
 
 
     private fun closeActivity() {
-        _closeActivityLiveData.postValue(Unit)
+        _closeActivityEvent.postValue(Unit)
     }
 
     fun addNewBook() {
-        _addBookLiveData.postValue(Unit)
+        _addBookEvent.postValue(Unit)
     }
 
     fun showBookInfo(id: Int) {

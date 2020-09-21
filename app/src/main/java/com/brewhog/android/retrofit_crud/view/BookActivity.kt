@@ -1,13 +1,11 @@
 package com.brewhog.android.retrofit_crud.view
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.brewhog.android.retrofit_crud.R
 import com.brewhog.android.retrofit_crud.databinding.ActivityBookBinding
-import com.brewhog.android.retrofit_crud.repository.BookRepository
 import com.brewhog.android.retrofit_crud.viewmodel.BookViewModel
 import com.brewhog.android.retrofit_crud.viewmodel.ViewModelFactory
 import dagger.android.support.DaggerAppCompatActivity
@@ -38,7 +36,7 @@ class BookActivity : DaggerAppCompatActivity() {
 
         bookBinding.viewModel = viewModel
 
-        viewModel.closeActivityLiveData.observe(this, Observer {
+        viewModel.closeActivityEvent.observe(this, Observer {
             finish()
         })
     }

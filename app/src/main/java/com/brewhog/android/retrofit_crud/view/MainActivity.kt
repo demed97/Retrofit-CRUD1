@@ -13,10 +13,11 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.brewhog.android.retrofit_crud.R
 import com.brewhog.android.retrofit_crud.database.BookDao
 import com.brewhog.android.retrofit_crud.database.BookDatabase
-import com.brewhog.android.retrofit_crud.databinding.ActivityMainBinding
 import com.brewhog.android.retrofit_crud.model.Book
 import com.brewhog.android.retrofit_crud.repository.BookRepository
 import com.brewhog.android.retrofit_crud.util.BookAdapter
@@ -36,46 +37,15 @@ class MainActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var factory: ViewModelFactory
 
-    @Inject
-    lateinit var adapter: BookAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        findNavController(this, R.id.nav_host_frag)
 //        val adapter = BookAdapter(listOf())
 //        val factory = ViewModelFactory(application, BookRepository.getRepository(application))
         viewModel = ViewModelProvider(this, factory).get(BookViewModel::class.java)
         checkConnection(viewModel)
-        observeToLiveData(viewModel, adapter)
-
-
-        adapter.callback = object : BookAdapter.AdapterCallback {
-            override fun callActivityFromHolder(holder: BookHolder, id: Int) {
-                holder.itemView.setOnClickListener(View.OnClickListener {
-                    val intent = Intent(baseContext, BookActivity::class.java)
-                    intent.putExtra("bookID", id)
-                    this@MainActivity.startActivityForResult(intent, 0)
-                })
-            }
-        }
-
-        val mainBinding =
-            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        mainBinding.adapter = adapter
-        mainBinding.viewModel = viewModel
     }
-
-    private fun observeToLiveData(viewModel: BookViewModel, adapter: BookAdapter) {
-
-        viewModel.addBookLiveData.observe(this, Observer {
-            val intent = Intent(baseContext, BookActivity::class.java)
-            this@MainActivity.startActivityForResult(intent, 0)
-        })
-
-        viewModel.bookLiveData.observe(this, Observer {
-            adapter.updateBookList(it)
-        })
-    }
-
 
     private fun checkConnection(viewModel: BookViewModel) {
 
@@ -103,12 +73,5 @@ class MainActivity : DaggerAppCompatActivity() {
             )
         }
         manager.registerNetworkCallback(networkRequest, callback)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            0 -> viewModel.loadBookListFromServer()
-        }
     }
 }
